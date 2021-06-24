@@ -13,4 +13,5 @@
    ███▄▄█▄▄███
     ▄█▀▀▄▀▀█▄
      ▀▀   ▀▀
+     bullet r10 bullet c84 enemy r 20 enemy c 15
      class enemie --> int collision
