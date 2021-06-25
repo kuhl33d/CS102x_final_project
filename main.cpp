@@ -98,15 +98,21 @@ void menu(unsigned char x[][170]){
             }
     }
 }
+void dbg(user &u){
+    cout << "nb " << u.nb << endl;
+    for(int i=0;i<u.nb;i++){
+        cout << "r " << u.bullets[i].r << " c " << u.bullets[i].c << " ishit " << u.bullets[i].ishit << " isdead " << u.bullets[i].isdead << endl;
+    }
+}
 int main(){
     // w:170 h:40
     unsigned char x[42][170];
-    int killed=0,tot=1,level=1,r;
+    int killed=0,tot=2,level=1,r;
     int fire_rate=7,state=0;
     user player;
-    enemie1 *e1;
-    enemie2 *e2;
-    enemie3 *e3;
+    enemy1 *e1;
+    enemy2 *e2;
+    enemy3 *e3;
     int ne1,ne2,ne3;
     random ran;
     clear(x,player);
@@ -122,7 +128,7 @@ int main(){
         // for(int i=0;i<ne1;i++){
         //     if(e1[i].killed == 2){
         //         delete e1[i].drops;
-        //         enemie1 *tmp = new enemie1[ne1-1];
+        //         enemy1 *tmp = new enemy1[ne1-1];
         //         for(int j=0;j<i;j++)
         //             tmp[j] = e1[j];
         //         for(int j=i+1;j<ne1;j++)
@@ -130,37 +136,29 @@ int main(){
         //         delete []e1;
         //         ne1--;
         //         i--;
-        //         e1 = new enemie1[ne1];
+        //         e1 = new enemy1[ne1];
         //         for(int j=0;j<ne1;j++)
         //             e1[j] = tmp[j];
         //         delete []tmp;
         //     }
         // }
-        if(killed >= tot/2){
-            for(int i=0;i<ne1;i++)
-                e1[i].descend = 1;
-            for(int i=0;i<ne2;i++)
-                e2[i].descend = 1;
-            for(int i=0;i<ne3;i++)
-                e3[i].descend = 1;
-        }
         if(killed == tot){
             state=0;
             level++;
         }
         if(state==0){
             killed=0;
-            ne1=0,ne2=0,ne2=0;
+            ne1=0,ne2=0,ne3=0;
             for(int i=7;i<170-15;i+=14)
                 ne1++;
-            e1 = new enemie1[ne1];
+            e1 = new enemy1[ne1];
             for(int i=7,j=0;i<170-15;i+=14,j++){
                 e1[j].r = 7,e1[j].c = i;
             }
 
             for(int i=11;i<170-18;i+=17)
                 ne2++;
-            e2 = new enemie2[ne2];
+            e2 = new enemy2[ne2];
             for(int i=11,j=0;i<170-18;i+=17,j++){
                 e2[j].r = 13,e2[j].c = i;
             }
@@ -168,31 +166,39 @@ int main(){
             for(int i=11;i<170-18;i+=17)
                 ne3++;
         
-            e3 = new enemie3[ne3];
+            e3 = new enemy3[ne3];
             for(int i=11,j=0;i<170-18;i+=17,j++){
                 e3[j].r = 18,e3[j].c = i;
             }
             state=1;
-            tot = ne1 + ne2 + ne2;
+            tot = ne1 + ne2 + ne3;
         }
-        if(fire_rate==0){
-            if(ne3 > 0){
-                r=rand()%ne3;
-                if(e3[r].killed==0)
-                    e3[r].fire();
-            }else if(ne2 > 0){
-                r=rand()%ne2;
-                if(e2[r].killed==0)
-                    e1[r].fire();
-            }else if(ne1 > 0){
-                r=rand()%ne1;
-                if(e1[r].killed==0)
-                    e1[r].fire();
-            }
-            fire_rate = 7-level;
-        }else{
-            fire_rate--;
+        if(killed == tot/2){
+            for(int i=0;i<ne1;i++)
+                e1[i].descend = 1;
+            for(int i=0;i<ne2;i++)
+                e2[i].descend = 1;
+            for(int i=0;i<ne3;i++)
+                e3[i].descend = 1;
         }
+        // if(fire_rate==0){
+        //     if(ne3 > 0){
+        //         r=rand()%ne3;
+        //         if(e3[r].killed==0)
+        //             e3[r].fire();
+        //     }else if(ne2 > 0){
+        //         r=rand()%ne2;
+        //         if(e2[r].killed==0)
+        //             e1[r].fire();
+        //     }else if(ne1 > 0){
+        //         r=rand()%ne1;
+        //         if(e1[r].killed==0)
+        //             e1[r].fire();
+        //     }
+        //     fire_rate = 7-level;
+        // }else{
+        //     fire_rate--;
+        // }
         clear(x,player);
         player.draw(x);
         for(int i=0;i<ne1;i++)
@@ -213,7 +219,6 @@ int main(){
                 if(e1[i].killed == 1){
                     cout << i << " killed" << endl;
                     killed++;
-                    ne1--;
                     cout << "e1 killed";
                 }
             }
@@ -224,7 +229,6 @@ int main(){
                 if(e2[i].killed == 1){
                     cout << i << " killed" << endl;
                     killed++;
-                    ne2--;
                     cout << "e2 killed";
                 }
             }
@@ -233,18 +237,19 @@ int main(){
             if(e3[i].collision(player.bullets,player.nb,r)){
                 player.remove(r);
                 if(e3[i].killed == 1){
-                    cout << i << " killed" << endl;
+                    // cout << i << " killed" << endl;
                     killed++;
-                    ne3--;
-                    cout << "e3 killed";
+                    // cout << "e3 killed"<<endl;
+                    // cout << killed << " " << tot << endl;
                 }
             }
         }
         cout.flush();
-        cout << "r" << player.bullets[0].r << " c" << player.bullets[0].c << " enemy r " << e3[0].r <<  " enemy c " << e3[0].c  <<  endl;
-        Sleep(1000);
+        // cout << "bullet r" << player.bullets[0].r << " bullet c" << player.bullets[0].c << " enemy r " << e3[0].r <<  " enemy c " << e3[0].c  <<  endl;
+        // dbg(player);
+
+        Sleep(150);
         system("cls");
     }
-    delete e1;
     return 0;
 }

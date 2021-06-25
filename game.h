@@ -237,18 +237,18 @@ public:
         }
     }
 };
-class enemie1{
+class enemy{
     public:
     int r;
     int c;
     int sr=5;
-    int sc=7;
+    int sc;
     int anim=0;
     int descend=0;
     int killed=0;
     int nd=0;
     dropper *drops;
-    ~enemie1(){
+    ~enemy(){
         delete drops;
     }
     void remove(int i){
@@ -313,8 +313,8 @@ class enemie1{
     }
     int collision(bullet *b,int &nb,int &ret){
         for(int i=0;i<nb;i++){
-            if(b[i].r <= this->sr+1 && b[i].r >= this->sr-1){
-                if(b[i].c >= this->c-sr+1 && b[i].c <= this->c+sr-1 && this->killed==0){
+            if(b[i].r <= this->r+(this->sr/2) && b[i].r >= this->r-(this->sc/2) && b[i].ishit == 0){
+                if(b[i].c <= this->c+(this->sc/2) && b[i].c >= this->c-(this->sc/2) && this->killed==0){
                     if(killed==0)
                         killed=1;
                     ret = i;
@@ -325,7 +325,13 @@ class enemie1{
         }
         return 0;
     }
-    void operator = (enemie1 &s){
+};
+class enemy1:public enemy{
+    public:
+    enemy1(){
+        sc=7;
+    }
+    void operator = (enemy1 &s){
         this->r = s.r;
         this->c = s.c;
         this->anim = s.anim;
@@ -386,19 +392,16 @@ class enemie1{
                     anim=0;
                     c-=4;
                 }
-            }else{
+            }else if(descend == 1){
                 if(anim == 0){
                     anim = 1;
                     c+=4;
-                }
-                else if(anim == 1){
+                }else if(anim == 1){
                     anim = 2;
-                }else if(anim == 2){
-                    anim = 3;
                     c-=4;
-                }else if(anim == 3){
+                }else if(anim == 2){
                     anim = 0;
-                    r+= 1;
+                    r+=1;
                 }
             }
         }else if(killed == 1){
@@ -463,95 +466,12 @@ class enemie1{
         }
     }
 };
-class enemie2{
+class enemy2:public enemy{
     public:
-    int r;
-    int c;
-    int sr=5;
-    int sc=6;
-    int anim=0;
-    int descend=0;
-    int killed=0;
-    int nd=0;
-    dropper *drops;
-    ~enemie2(){
-        delete drops;
+    enemy2(){
+        sc=11;
     }
-    void remove(int i){
-        dropper *tmp = new dropper[nd-1];
-        for(int j=0;j<i;j++){
-            tmp[j].r = drops[j].r;
-            tmp[j].c = drops[j].c;
-            tmp[j].oldr = drops[j].oldr;
-            tmp[j].ishit = drops[j].ishit;
-            tmp[j].isdead = drops[j].isdead;
-        }
-        for(int j = i+1;j<nd;j++){
-            tmp[j-1].r = drops[j].r;
-            tmp[j-1].c = drops[j].c;
-            tmp[j-1].oldr = drops[j].oldr;
-            tmp[j-1].ishit = drops[j].ishit;
-            tmp[j-1].isdead = drops[j].isdead;
-        }
-        delete drops;
-        nd--;
-        drops = new dropper[nd];
-        for(int j=0;j<nd;j++){
-            drops[j].r = tmp[j].r;
-            drops[j].c = tmp[j].c;
-            drops[j].oldr = tmp[j].oldr;
-            drops[j].ishit = tmp[j].ishit;
-            drops[j].isdead = tmp[j].isdead;
-        }
-        delete tmp;
-    }
-    void fire(){
-        if(nd == 0){
-            nd++;
-            drops = new dropper[nd];
-            drops[0].r = this->r+2;
-            drops[0].c = this->c;
-            drops[0].ishit = 0;
-            drops[0].isdead = 0;
-        }else{
-            dropper *tmp = new dropper[nd];
-            for(int i=0;i<nd;i++){
-                tmp[i].r = drops[i].r;
-                tmp[i].c = drops[i].c;
-                tmp[i].oldr = drops[i].oldr;
-                tmp[i].ishit = drops[i].ishit;
-                tmp[i].isdead = drops[i].isdead; 
-            }
-            delete drops;
-            nd++;
-            drops = new dropper[nd];
-            for(int i=0;i<nd-1;i++){
-                drops[i].r = tmp[i].r;
-                drops[i].c = tmp[i].c;
-                drops[i].oldr = tmp[i].oldr;
-                drops[i].ishit = tmp[i].ishit;
-                drops[i].isdead = tmp[i].isdead;
-            }
-            delete tmp;
-            drops[nd-1].r = this->r+2;
-            drops[nd-1].c = this->c;
-        }
-    }
-    int collision(bullet *b,int &nb,int &ret){
-        for(int i=0;i<nb;i++){
-            if(b[i].r <= this->sr+1 && b[i].r >= this->sr-1){
-                if(b[i].c >= this->c-sr+1 && b[i].c <= this->c+sr-1 && this->killed==0){
-                    if(killed==0)
-                        killed=1;
-                    ret = i;
-                    b[i].ishit = 1;
-                    return 1;
-                }    
-            }
-        }
-        return 0;
-    }
-    void operator = (enemie2 &s){
+    void operator = (enemy2 &s){
         this->r = s.r;
         this->c = s.c;
         this->anim = s.anim;
@@ -606,17 +526,25 @@ class enemie2{
                 for(int i=0;i<7;i++)
                     x[r+2][c-3+i] = body2[4][i];
             }
-            if(anim == 0){
-                anim = 1;
-                c+=4;
-            }else if(anim == 1){
-                anim = 2;
-            }else if(anim == 2){
-                anim = 3;
-                c-=4;
-            }else if(anim == 3){
-                anim = 0;
-                r+= 1;
+            if(descend == 0){
+                if(anim == 0){
+                    c+=4;
+                    anim=1;
+                }else{
+                    anim=0;
+                    c-=4;
+                }
+            }else if(descend == 1){
+                if(anim == 0){
+                    anim = 1;
+                    c+=4;
+                }else if(anim == 1){
+                    anim = 2;
+                    c-=4;
+                }else if(anim == 2){
+                    anim = 0;
+                    r+=1;
+                }
             }
         }else if(killed == 1){
             for(int i=0;i<3;i++){
@@ -680,95 +608,12 @@ class enemie2{
         }
     }
 };
-class enemie3{
+class enemy3:public enemy{
     public:
-    int r;
-    int c;
-    int sr=5;
-    int sc=11;
-    int anim=0;
-    int descend=0;
-    int killed=0;
-    int nd=0;
-    dropper *drops;
-    ~enemie3(){
-        delete drops;
+    enemy3(){
+        sc=11;
     }
-    void remove(int i){
-        dropper *tmp = new dropper[nd-1];
-        for(int j=0;j<i;j++){
-            tmp[j].r = drops[j].r;
-            tmp[j].c = drops[j].c;
-            tmp[j].oldr = drops[j].oldr;
-            tmp[j].ishit = drops[j].ishit;
-            tmp[j].isdead = drops[j].isdead;
-        }
-        for(int j = i+1;j<nd;j++){
-            tmp[j-1].r = drops[j].r;
-            tmp[j-1].c = drops[j].c;
-            tmp[j-1].oldr = drops[j].oldr;
-            tmp[j-1].ishit = drops[j].ishit;
-            tmp[j-1].isdead = drops[j].isdead;
-        }
-        delete drops;
-        nd--;
-        drops = new dropper[nd];
-        for(int j=0;j<nd;j++){
-            drops[j].r = tmp[j].r;
-            drops[j].c = tmp[j].c;
-            drops[j].oldr = tmp[j].oldr;
-            drops[j].ishit = tmp[j].ishit;
-            drops[j].isdead = tmp[j].isdead;
-        }
-        delete tmp;
-    }
-    void fire(){
-        if(nd == 0){
-            nd++;
-            drops = new dropper[nd];
-            drops[0].r = this->r+2;
-            drops[0].c = this->c;
-            drops[0].ishit = 0;
-            drops[0].isdead = 0;
-        }else{
-            dropper *tmp = new dropper[nd];
-            for(int i=0;i<nd;i++){
-                tmp[i].r = drops[i].r;
-                tmp[i].c = drops[i].c;
-                tmp[i].oldr = drops[i].oldr;
-                tmp[i].ishit = drops[i].ishit;
-                tmp[i].isdead = drops[i].isdead; 
-            }
-            delete drops;
-            nd++;
-            drops = new dropper[nd];
-            for(int i=0;i<nd-1;i++){
-                drops[i].r = tmp[i].r;
-                drops[i].c = tmp[i].c;
-                drops[i].oldr = tmp[i].oldr;
-                drops[i].ishit = tmp[i].ishit;
-                drops[i].isdead = tmp[i].isdead;
-            }
-            delete tmp;
-            drops[nd-1].r = this->r+2;
-            drops[nd-1].c = this->c;
-        }
-    }
-    int collision(bullet *b,int &nb,int &ret){
-        for(int i=0;i<nb;i++){
-            if(b[i].r <= this->r+(this->sr/2) && b[i].r >= this->r-(this->sr/2) ){
-                if(b[i].c <= this->c-(this->sc/2) && b[i].c >= this->c+(this->sc/2) && this->killed==0){
-                    if(killed==0)
-                        killed=1;
-                    ret = i;
-                    b[i].ishit = 1;
-                    return 1;
-                }    
-            }
-        }
-        return 0;
-    }
-    void operator = (enemie3 &s){
+    void operator = (enemy3 &s){
         this->r = s.r;
         this->c = s.c;
         this->anim = s.anim;
@@ -823,18 +668,25 @@ class enemie3{
                 for(int i=0;i<9;i++)
                     x[r+2][c-4+i] = body2[4][i];
             }
-            if(anim == 0){
-                anim = 1;
-                c+=4;
-            }
-            else if(anim == 1){
-                anim = 2;
-            }else if(anim == 2){
-                anim = 3;
-                c-=4;
-            }else if(anim == 3){
-                anim = 0;
-                r+= 1;
+            if(descend == 0){
+                if(anim == 0){
+                    c+=4;
+                    anim=1;
+                }else{
+                    anim=0;
+                    c-=4;
+                }
+            }else if(descend == 1){
+                if(anim == 0){
+                    anim = 1;
+                    c+=4;
+                }else if(anim == 1){
+                    anim = 2;
+                    c-=4;
+                }else if(anim == 2){
+                    anim = 0;
+                    r+=1;
+                }
             }
         }else if(killed == 1){
             for(int i=0;i<3;i++){
