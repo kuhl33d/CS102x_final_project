@@ -35,6 +35,11 @@ struct dropper{
             r=40;
             isdead=1;
         }
+        else if(r > 35){
+            if(x[r][c]!=' '){
+                ishit=1;
+            }
+        }
     }
     void draw(unsigned char x[][170],int speed=3){
         if(!this->isdead && !this->ishit){
@@ -74,7 +79,6 @@ class random{
 };
 class user
 {
-// w:170 h:40
 public:
     int r;
     int c;
@@ -83,12 +87,14 @@ public:
     int sr=3,sc=11;
     int life=3;
     int jump = 0;
+    int score;
     unsigned char body[3][11]={
         {220,219,220},
         {220,219,219,219,219,219,219,219,219,219,220},
         {219,219,219,219,219,219,219,219,219,219,219}
     };
     user(){
+        score=0;
         nb=0;
         r = 39,c=84;
         life=3;
@@ -130,18 +136,18 @@ public:
         else if(r != 39 && jump == 0)
             r=39;
         for(int i=0;i<3;i++){
-            if(x[r-1][c-1+i] != ' ')
-                life--;
+            // if(x[r-1][c-1+i] != ' ')
+            //     life--;
             x[r-1][c-1+i] = body[0][i];
         }
         for(int i=0;i<11;i++){
-            if(x[r][c-5+i] != ' ')
-                life--;
+            // if(x[r][c-5+i] != ' ')
+            //     life--;
             x[r][c-5+i] = body[1][i];
         }
         for(int i=0;i<11;i++){
-            if(x[r+1][c-5+i] != ' ')
-                life--;
+            // if(x[r+1][c-5+i] != ' ')
+            //     life--;
             x[r+1][c-5+i] = body[2][i];
         }
         if(nb != 0){
@@ -234,6 +240,21 @@ public:
             delete tmp;
             bullets[nb-1].r = this->r-2;
             bullets[nb-1].c = this->c;
+        }
+    }
+    void ishit(dropper *drops,int nd,int &r){
+        int f=0;
+        for(int i=r;i<=r+1;i++){
+            for(int j=c-5;j<=c+5;j++){
+                for(int k=0;k<nd;k++){
+                    if(drops[k].r == i && drops[k].c == j){
+                        f=1;   
+                        r=k;
+                    }
+                }
+            }
+            if(f)
+                life--;
         }
     }
 };

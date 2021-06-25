@@ -8,7 +8,31 @@ void clear(unsigned char x[][170]){
         for(int j=0;j<170;j++)
             x[i][j] = ' ';
 }
-void clear(unsigned char x[][170],user &player){
+void end(){
+    system("cls");
+    cout << R"(
+   :::   :::  ::::::::  :::    :::        :::       ::: ::::::::::: ::::    :::          ::: 
+  :+:   :+: :+:    :+: :+:    :+:        :+:       :+:     :+:     :+:+:   :+:          :+:  
+  +:+ +:+  +:+    +:+ +:+    +:+        +:+       +:+     +:+     :+:+:+  +:+          +:+   
+  +#++:   +#+    +:+ +#+    +:+        +#+  +:+  +#+     +#+     +#+ +:+ +#+          +#+    
+  +#+    +#+    +#+ +#+    +#+        +#+ +#+#+ +#+     +#+     +#+  +#+#+#          +#+     
+ #+#    #+#    #+# #+#    #+#         #+#+# #+#+#      #+#     #+#   #+#+#                   
+###     ########   ########           ###   ###   ########### ###    ####          ###       
+)";
+}
+void gameover(){
+    system("pause");
+    cout << R"(
+      ::::::::      :::       :::   :::   ::::::::::          ::::::::  :::     ::: :::::::::: ::::::::: 
+    :+:    :+:   :+: :+:    :+:+: :+:+:  :+:                :+:    :+: :+:     :+: :+:        :+:    :+: 
+   +:+         +:+   +:+  +:+ +:+:+ +:+ +:+                +:+    +:+ +:+     +:+ +:+        +:+    +:+  
+  :#:        +#++:++#++: +#+  +:+  +#+ +#++:++#           +#+    +:+ +#+     +:+ +#++:++#   +#++:++#:    
+ +#+   +#+# +#+     +#+ +#+       +#+ +#+                +#+    +#+  +#+   +#+  +#+        +#+    +#+    
+#+#    #+# #+#     #+# #+#       #+# #+#                #+#    #+#   #+#+#+#   #+#        #+#    #+#     
+########  ###     ### ###       ### ##########          ########      ###     ########## ###    ###      
+)" ;
+}
+void clear(unsigned char x[][170],user &player,int level){
     for(int i=0;i<42;i++)
         for(int j=0;j<170;j++)
             x[i][j] = ' ';
@@ -19,6 +43,13 @@ void clear(unsigned char x[][170],user &player){
     x[41][0]='l',x[41][1]='i',x[41][2]='f',x[41][3]='e',x[41][4]=':';
     for(int i=0;i<player.life;i++)
         x[41][5+i]=3;
+    x[41][158]='s',x[41][159]='c',x[41][160]='o',x[41][161]='r',x[41][162]='e',x[41][163]=':';
+    for(int i=0,j=10;;i++,j*=10){
+        x[41][168-i] = 48+(player.score%j/(j/10));
+        if(player.score%j==player.score)
+            break;
+    }
+    x[41][82]='l',x[41][83]='e',x[41][84]='v',x[41][85]='e',x[41][86]='l',x[41][87]=':',x[41][89]=48+level;
 }
 void prt(unsigned char x[][170]){
     for(int i=0;i<42;i++)
@@ -106,150 +137,186 @@ void dbg(user &u){
 }
 int main(){
     // w:170 h:40
-    unsigned char x[42][170];
+    unsigned char x[42][170],k;
     int killed=0,tot=2,level=1,r;
-    int fire_rate=7,state=0;
+    int complex=7;
+    int fire_rate=complex,state=0;
     user player;
     enemy1 *e1;
     enemy2 *e2;
     enemy3 *e3;
     int ne1,ne2,ne3;
     random ran;
-    clear(x,player);
+    clear(x,player,level);
     system("cls");
     menu(x);
-    while(player.life > 0){
-        // if(ne1)
-        // if(ne1==0){
-        //     if(ne2 >0){
+    while (1)
+    {
+        while(player.life > 0 && complex!=0){
+            // if(ne1)
+            // if(ne1==0){
+            //     if(ne2 >0){
 
-        //     }
-        // }
-        // for(int i=0;i<ne1;i++){
-        //     if(e1[i].killed == 2){
-        //         delete e1[i].drops;
-        //         enemy1 *tmp = new enemy1[ne1-1];
-        //         for(int j=0;j<i;j++)
-        //             tmp[j] = e1[j];
-        //         for(int j=i+1;j<ne1;j++)
-        //             tmp[j-1] = e1[j];
-        //         delete []e1;
-        //         ne1--;
-        //         i--;
-        //         e1 = new enemy1[ne1];
-        //         for(int j=0;j<ne1;j++)
-        //             e1[j] = tmp[j];
-        //         delete []tmp;
-        //     }
-        // }
-        if(killed == tot){
-            state=0;
-            level++;
-        }
-        if(state==0){
-            killed=0;
-            ne1=0,ne2=0,ne3=0;
-            for(int i=7;i<170-15;i+=14)
-                ne1++;
-            e1 = new enemy1[ne1];
-            for(int i=7,j=0;i<170-15;i+=14,j++){
-                e1[j].r = 7,e1[j].c = i;
+            //     }
+            // }
+            // for(int i=0;i<ne1;i++){
+            //     if(e1[i].killed == 2){
+            //         delete e1[i].drops;
+            //         enemy1 *tmp = new enemy1[ne1-1];
+            //         for(int j=0;j<i;j++)
+            //             tmp[j] = e1[j];
+            //         for(int j=i+1;j<ne1;j++)
+            //             tmp[j-1] = e1[j];
+            //         delete []e1;
+            //         ne1--;
+            //         i--;
+            //         e1 = new enemy1[ne1];
+            //         for(int j=0;j<ne1;j++)
+            //             e1[j] = tmp[j];
+            //         delete []tmp;
+            //     }
+            // }
+            if(killed == tot){
+                state=0;
+                level++;
             }
+            if(state==0){
+                if(level!=1){
+                    complex--;
+                }
+                for(int i=0;i<player.nb;i++){
+                    player.bullets[i].isdead = 1;
+                }
+                player.draw(x);
+                killed=0;
+                ne1=0,ne2=0,ne3=0;
+                for(int i=7;i<170-15;i+=14)
+                    ne1++;
+                e1 = new enemy1[ne1];
+                for(int i=7,j=0;i<170-15;i+=14,j++){
+                    e1[j].r = 7,e1[j].c = i;
+                }
 
-            for(int i=11;i<170-18;i+=17)
-                ne2++;
-            e2 = new enemy2[ne2];
-            for(int i=11,j=0;i<170-18;i+=17,j++){
-                e2[j].r = 13,e2[j].c = i;
-            }
+                for(int i=11;i<170-18;i+=17)
+                    ne2++;
+                e2 = new enemy2[ne2];
+                for(int i=11,j=0;i<170-18;i+=17,j++){
+                    e2[j].r = 13,e2[j].c = i;
+                }
 
-            for(int i=11;i<170-18;i+=17)
-                ne3++;
-        
-            e3 = new enemy3[ne3];
-            for(int i=11,j=0;i<170-18;i+=17,j++){
-                e3[j].r = 18,e3[j].c = i;
+                for(int i=11;i<170-18;i+=17)
+                    ne3++;
+            
+                e3 = new enemy3[ne3];
+                for(int i=11,j=0;i<170-18;i+=17,j++){
+                    e3[j].r = 18,e3[j].c = i;
+                }
+                state=1;
+                tot = ne1 + ne2 + ne3;
             }
-            state=1;
-            tot = ne1 + ne2 + ne3;
-        }
-        if(killed == tot/2){
+            if(killed == tot/2){
+                for(int i=0;i<ne1;i++)
+                    e1[i].descend = 1;
+                for(int i=0;i<ne2;i++)
+                    e2[i].descend = 1;
+                for(int i=0;i<ne3;i++)
+                    e3[i].descend = 1;
+            }
+            if(fire_rate==0){
+                if(ne3 > 0){
+                    r=rand()%ne3;
+                    if(e3[r].killed==0)
+                        e3[r].fire();
+                }else if(ne2 > 0){
+                    r=rand()%ne2;
+                    if(e2[r].killed==0)
+                        e1[r].fire();
+                }else if(ne1 > 0){
+                    r=rand()%ne1;
+                    if(e1[r].killed==0)
+                        e1[r].fire();
+                }
+                fire_rate = complex;
+            }else{
+                fire_rate--;
+            }
+            clear(x,player,level);
+            player.draw(x);
             for(int i=0;i<ne1;i++)
-                e1[i].descend = 1;
+                e1[i].draw(x);
             for(int i=0;i<ne2;i++)
-                e2[i].descend = 1;
+                e2[i].draw(x);
             for(int i=0;i<ne3;i++)
-                e3[i].descend = 1;
-        }
-        // if(fire_rate==0){
-        //     if(ne3 > 0){
-        //         r=rand()%ne3;
-        //         if(e3[r].killed==0)
-        //             e3[r].fire();
-        //     }else if(ne2 > 0){
-        //         r=rand()%ne2;
-        //         if(e2[r].killed==0)
-        //             e1[r].fire();
-        //     }else if(ne1 > 0){
-        //         r=rand()%ne1;
-        //         if(e1[r].killed==0)
-        //             e1[r].fire();
-        //     }
-        //     fire_rate = 7-level;
-        // }else{
-        //     fire_rate--;
-        // }
-        clear(x,player);
-        player.draw(x);
-        for(int i=0;i<ne1;i++)
-            e1[i].draw(x);
-        for(int i=0;i<ne2;i++)
-            e2[i].draw(x);
-        for(int i=0;i<ne3;i++)
-            e3[i].draw(x);
-
-        prt(x);
-        while(kbhit()){
-            char key = getch();
-            player.check(key);
-        }
-        for(int i=0;i<ne1;i++){
-            if(e1[i].collision(player.bullets,player.nb,r)){
-                player.remove(r);
-                if(e1[i].killed == 1){
-                    cout << i << " killed" << endl;
-                    killed++;
-                    cout << "e1 killed";
-                }
+                e3[i].draw(x);
+            prt(x);
+            while(kbhit()){
+                k = getch();
+                player.check(k);
             }
-        }
-        for(int i=0;i<ne2;i++){
-            if(e2[i].collision(player.bullets,player.nb,r)){
-                player.remove(r);
-                if(e2[i].killed == 1){
-                    cout << i << " killed" << endl;
-                    killed++;
-                    cout << "e2 killed";
+            for(int i=0;i<ne1;i++){
+                if(e1[i].collision(player.bullets,player.nb,r)){
+                    player.remove(r);
+                    if(e1[i].killed == 1){
+                        // cout << i << " killed" << endl;
+                        killed++;
+                        // cout << "e1 killed";
+                        player.score+=10;
+                    }
                 }
+                // if(e1[i].nd){
+                //     player.ishit(e1[i].drops,e1[i].nd,r);
+                //     e1[i].remove(r);
+                // }
             }
-        }
-        for(int i=0;i<ne3;i++){
-            if(e3[i].collision(player.bullets,player.nb,r)){
-                player.remove(r);
-                if(e3[i].killed == 1){
-                    // cout << i << " killed" << endl;
-                    killed++;
-                    // cout << "e3 killed"<<endl;
-                    // cout << killed << " " << tot << endl;
+            for(int i=0;i<ne2;i++){
+                if(e2[i].collision(player.bullets,player.nb,r)){
+                    player.remove(r);
+                    if(e2[i].killed == 1){
+                        // cout << i << " killed" << endl;
+                        killed++;
+                        // cout << "e2 killed";
+                        player.score+=20;
+                    }
                 }
+                // if(e2[i].nd){
+                //     player.ishit(e2[i].drops,e2[i].nd,r);
+                //     e2[i].remove(r);
+                // }
             }
+            for(int i=0;i<ne3;i++){
+                if(e3[i].collision(player.bullets,player.nb,r)){
+                    player.remove(r);
+                    if(e3[i].killed == 1){
+                        // cout << i << " killed" << endl;
+                        killed++;
+                        // cout << "e3 killed"<<endl;
+                        // cout << killed << " " << tot << endl;
+                        player.score+=30;
+                    }
+                }
+                // if(e3[i].nd){
+                //     player.ishit(e3[i].drops,e3[i].nd,r);
+                //     e3[i].remove(r);
+                // }
+            }
+            cout.flush();
+            // cout << "bullet r" << player.bullets[0].r << " bullet c" << player.bullets[0].c << " enemy r " << e3[0].r <<  " enemy c " << e3[0].c  <<  endl;
+            // dbg(player);
+            Sleep(150);
+            system("cls");
         }
-        cout.flush();
-        // cout << "bullet r" << player.bullets[0].r << " bullet c" << player.bullets[0].c << " enemy r " << e3[0].r <<  " enemy c " << e3[0].c  <<  endl;
-        // dbg(player);
-
-        Sleep(150);
-        system("cls");
+        if(complex==0){
+            complex=7;
+            player.score=0;
+            level=1;
+            end();
+        }else{
+            gameover();
+        }
+        cout << "play another game ? [y/n]";
+        k = getch();
+        if(k=='n')
+            break;
     }
     return 0;
 }
