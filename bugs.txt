@@ -15,3 +15,7 @@
      ▀▀   ▀▀
      bullet r10 bullet c84 enemy r 20 enemy c 15
      class enemie --> int collision
+fixed 25/06/2021 17:06
+25/06/2021:
+enemies fire random using random class 
+level complexity
