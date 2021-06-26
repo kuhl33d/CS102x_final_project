@@ -30,16 +30,20 @@ struct dropper{
     int isdead=0;
     void update(unsigned char x[][170],int speed){
         oldr=r;
-        r += speed;
-        if(r > 40){
-            r=40;
+        (r>35)? r++:r+=speed;
+        if(r > 41){
+            r=41;
             isdead=1;
         }
-        else if(r > 35){
-            if(x[r][c]!=' '){
-                ishit=1;
-            }
-        }
+        // else if(r >= 40){
+        //     if(x[r][c]!=' '){
+        //         ishit=1;
+        //         std::cout << "hit " << this << std::endl; 
+        //         Sleep(3333);
+        //     }
+        //     // r-= speed/2;
+        //     //speed != 1
+        // }
     }
     void draw(unsigned char x[][170],int speed=3){
         if(!this->isdead && !this->ishit){
@@ -242,21 +246,20 @@ public:
             bullets[nb-1].c = this->c;
         }
     }
-    void ishit(dropper *drops,int nd,int &r){
-        int f=0;
-        for(int i=r;i<=r+1;i++){
-            for(int j=c-5;j<=c+5;j++){
-                for(int k=0;k<nd;k++){
-                    if(drops[k].r == i && drops[k].c == j){
-                        f=1;   
-                        r=k;
-                    }
-                }
-            }
-            if(f)
-                life--;
-        }
-    }
+    // int ishit(dropper *drops,int nd,int &r){
+    //     int f=0;
+    //     for(int k=0;k<nd;k++){
+    //         if((drops[k].r == this->r)&&(drops[k].r == this->r+1) && ((drops[k].c >= this->c-(sc/2)) && (drops[k].c >= this->c-(sc/2))) ){
+    //             life--;
+    //             f=1;   
+    //             r=k;
+    //             std::cout << "life--" << std::endl;
+    //             Sleep(3333);
+    //             return 1;
+    //         }
+    //     }
+    //     return 0; 
+    // }
 };
 class enemy{
     public:
